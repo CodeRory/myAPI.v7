@@ -25,19 +25,14 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployments(string userGuid)
         {
-            User? user = _userRepository.GetByGuidAsync(userGuid.ToGuid());
+            User? user = _userRepository.GetByGuidAsync(userGuid);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            List<Employment> employments = await _dbContext.Employments
-                .AsNoTracking()
-                .Where(e => e.UserId == user.Id)
-                .ToListAsync();
-
-            return Ok(employments);
+            return Ok(await _employmentRepository.FindAsync(user.Id));
         }
 
         [HttpDelete("{id}")]

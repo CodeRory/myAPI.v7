@@ -24,6 +24,8 @@ namespace TodoApi.Repositories
                 EndDate = newEmployment.EndDate,
             };
 
+            _dbContext.Employments.Add(employment);
+
             await _dbContext.SaveChangesAsync();
 
             return await GetAsync(employment.UserId, employment.Id);
@@ -46,9 +48,23 @@ namespace TodoApi.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IReadOnlyCollection<Employment>> FindAsync()
+        public async Task<IReadOnlyCollection<Employment>> FindAsync(int userId)
         {
-            return await _dbContext.Employments.ToListAsync();
+            User? user = await _dbContext.Users
+                .AsNoTracking()
+                .Include(u => u.Address)
+                .Include(e => e.Employments)
+                .SingleOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return new List<Employment>();
+            }
+
+            return await _dbContext.Employments
+                .AsNoTracking()
+                .Where(e => e.UserId == user.Id)
+                .ToListAsync();
         }
 
         public async Task<Employment?> GetAsync(int userId, int employmentId)
@@ -85,6 +101,8 @@ namespace TodoApi.Repositories
             employment.Salary = updateEmployment.Salary;
             employment.StartDate = updateEmployment.StartDate;
             employment.EndDate = updateEmployment.EndDate;
+
+            _dbContext.Entry(employment).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
 
