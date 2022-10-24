@@ -3,6 +3,7 @@ using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Extensions;
 using TodoApi.Models;
+using TodoApi.Repositories;
 
 namespace TodoApi.Controllers
 {
@@ -10,21 +11,21 @@ namespace TodoApi.Controllers
     [ApiController]
     public class EmploymentsController : ControllerBase
     {
-        private readonly TodoContext _dbContext;
-
-        //LOOK OUT! HERE WE CHANGE THE NAME OF _CONTEXT TO _DBCONTEXT
-        public EmploymentsController(TodoContext dbContext)
+        private readonly IUserRepository _userRepository;
+        private readonly IEmploymentRepository _employmentRepository;
+       
+        public EmploymentsController(
+            IUserRepository userRepository,
+            EmploymentRepository employmentRepository)
         {
-            _dbContext = dbContext;
+            _employmentRepository = employmentRepository;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetEmployments(string userGuid)
         {
-            User? user = await _dbContext.Users
-                .AsNoTracking()
-                .Where(u => u.UniqueId == userGuid.ToGuid())
-                .SingleOrDefaultAsync();
+            User? user = _userRepository.GetByGuidAsync(userGuid.ToGuid());
 
             if (user == null)
             {
