@@ -40,6 +40,7 @@ namespace TodoApi.Controllers
             Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
 
             var user = await _context.Users
+                .AsNoTracking()
                 .Include(a => a.Address)
                 .Include(e => e.Employments)
                 .Where(u => u.UniqueId == guid)
