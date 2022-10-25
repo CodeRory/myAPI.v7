@@ -25,7 +25,7 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEmployments(string userGuid)
         {
-            User? user = _userRepository.GetByGuidAsync(userGuid);
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
 
             if (user == null)
             {
@@ -38,29 +38,23 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string userGuid, int id)
         {
-            User? user = await _dbContext.Users
-                .AsNoTracking()
-                .Where(u => u.UniqueId == userGuid.ToGuid())
-                .SingleOrDefaultAsync();
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
+                
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            Employment? employment = await _dbContext.Employments
-                .AsNoTracking()
-                .Where(e => e.UserId == user.Id && e.Id == id)
-                .SingleOrDefaultAsync();
+            Employment? employment = (Employment?)await _employmentRepository.FindAsync(id);
+                
 
             if (employment == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Employments.Remove(employment);
-
-            await _dbContext.SaveChangesAsync();
+            await _employmentRepository.DeleteAsync(id, employment);
 
             return NoContent();
         }
@@ -94,12 +88,7 @@ namespace TodoApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            User? user = await _dbContext.Users
-                .AsNoTracking()
-                .Include(a => a.Address)
-                .Include(e => e.Employments)
-                .Where(u => u.UniqueId == userGuid.ToGuid())
-                .SingleOrDefaultAsync();
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
 
             //Creating userId
             requestEmployment.UserId = user!.Id;
@@ -109,23 +98,11 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            //NOT NECCESARY//
-            /*//Creating a new instance of Employments (and use the id that we found on line 93)  */
-            List<Employment> employments = await _dbContext.Employments
-                 .AsNoTracking()
-                 .Where(e => e.UserId == user.Id)
-                 .ToListAsync();
+            await _employmentRepository.CreateAsync(requestEmployment);     
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            /*await _employmentRepository.SaveChangesAsync();*/
 
-            _dbContext.Employments.Add(requestEmployment);
-
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(employments);
+            return Ok(requestEmployment);
         }
 
         [HttpPut("{id}")]
@@ -159,18 +136,13 @@ namespace TodoApi.Controllers
 
             Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
 
-            User? user = await _dbContext.Users
-               .Where(u => u.UniqueId == userGuid.ToGuid())
-               .SingleOrDefaultAsync();
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
 
             if (user == null)
             {
                 return NotFound();
             }
-
-            Employment? employment = await _dbContext.Employments
-                .Where(e => e.UserId == user.Id && e.Id == id)
-                .SingleOrDefaultAsync();
+            Employment? employment = (Employment?)await _employmentRepository.FindAsync(id);
 
             if (employment == null)
             {
@@ -183,14 +155,8 @@ namespace TodoApi.Controllers
             employment.Company = requestEmployment.Company;
             employment.Salary = requestEmployment.Salary;
 
-            await _dbContext.SaveChangesAsync(); //SAVING
-
-            User? resultUser = await _dbContext.Users // SELECT
-                .AsNoTracking()
-                .Include(a => a.Address)
-                .Include(e => e.Employments)
-                .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync();
+           /* await _dbContext.SaveChangesAsync(); //SAVING*/
+            User? resultUser = await _userRepository.GetByGuidAsync(userGuid);
 
             if (resultUser == null)
             {
@@ -204,21 +170,14 @@ namespace TodoApi.Controllers
         [HttpGet("current")]
         public async Task<ActionResult<User>> GetCurrentEmployment(string userGuid) // we use from body when we use information from the payload
         {
-            User? user = await _dbContext.Users
-                .AsNoTracking()
-                .Where(u => u.UniqueId == userGuid.ToGuid())
-                .SingleOrDefaultAsync();
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            Employment? employment = await _dbContext.Employments
-                .AsNoTracking()
-                .Where(e => e.UserId == user.Id)
-                .OrderByDescending(e => e.StartDate)
-                .FirstOrDefaultAsync();
+            Employment? employment = (Employment?)await _employmentRepository.FindAsync(user.Id);
 
             if (employment == null)
             {
