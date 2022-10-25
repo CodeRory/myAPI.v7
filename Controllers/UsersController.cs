@@ -282,8 +282,6 @@ namespace TodoApi.Controllers
             
             await _userRepository.CreateAsync(user);
 
-            /*await _employmentRepository.SaveChangesAsync();*/
-
             return Ok(user);
         }
                 
