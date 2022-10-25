@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TodoApi.Models;
+using TodoApi.Repositories;
 
 namespace TodoApi.Controllers
 {
@@ -15,22 +16,29 @@ namespace TodoApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly IUserRepository _userRepository;
+        private readonly IEmploymentRepository _employmentRepository;
 
-        public UsersController(TodoContext context)
+        public UsersController(
+            IUserRepository userRepository,
+            EmploymentRepository employmentRepository)
         {
-            _context = context;
+            _employmentRepository = employmentRepository;
+            _userRepository = userRepository;
         }
 
-        // GET: api/Users
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            //_context is database
-            return await _context.Users
-                .Include(a => a.Address)
-                .Include(e => e.Employments)
-                .ToListAsync();
+            User? user = (User?)await _userRepository.FindAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
         // GET: api/Users/Guid
@@ -39,12 +47,7 @@ namespace TodoApi.Controllers
         {
             Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
 
-            var user = await _context.Users
-                .AsNoTracking()
-                .Include(a => a.Address)
-                .Include(e => e.Employments)
-                .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync();
+            var user = await _userRepository.GetByGuidAsync(guid);
 
             if (user == null)
             {
@@ -127,11 +130,8 @@ namespace TodoApi.Controllers
             //SECOND PART. AFTER CHECKING EVERYTHING IS OK, IT IS TIME TO SAVE DATA
             Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
 
-            User? userEntity = await _context.Users
-                .Include(a => a.Address) // Join users
-                .Include(e => e.Employments) // Join users
-                .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync();
+
+            var userEntity = await _userRepository.GetByGuidAsync(guid);            
 
             if (userEntity == null)
             {
@@ -194,14 +194,9 @@ namespace TodoApi.Controllers
                 }
             }
 
-            await _context.SaveChangesAsync(); //SAVING
+            /*await _context.SaveChangesAsync(); //SAVING*/
 
-            User? resultUser = await _context.Users // SELECT
-                .AsNoTracking()
-                .Include(a => a.Address)
-                .Include(e => e.Employments)
-                .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync();
+            var resultUser = await _userRepository.GetByGuidAsync(guid);          
 
             if (resultUser == null)
             {
@@ -211,8 +206,6 @@ namespace TodoApi.Controllers
             return resultUser;
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -272,11 +265,13 @@ namespace TodoApi.Controllers
             //ONLY NEED ONE FOREACH
             foreach (var employment in user.Employments)
             {
+
                 if (employment.Salary == null)
                 {
                     ModelState.AddModelError(nameof(employment.Salary), "Salary is mandatory");
                     return BadRequest(ModelState);
                 }
+
                 if (employment.StartDate == null)
                 {
                     ModelState.AddModelError(nameof(employment.Salary), "Start date is mandatory");
@@ -284,40 +279,32 @@ namespace TodoApi.Controllers
                 }
             }
 
-            //AFTER VALIDATIONS, CREATE USER!
-            _context.Users.Add(user);
+            
+            await _userRepository.CreateAsync(user);
 
-            await _context.SaveChangesAsync();
+            /*await _employmentRepository.SaveChangesAsync();*/
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return Ok(user);
         }
-
-        // DELETE: api/Users/Guid
+                
         [HttpDelete("{userGuid}")]
-        public async Task<IActionResult> DeleteUser(string userGuid)
+        public async Task<IActionResult> DeleteUser(Guid userGuid)
         {
-            Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
-
-            //We have to change our DELETE query
-            var user = await _context.Users
-                .AsNoTracking()
-                .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync();
-
+            User? user = await _userRepository.GetByGuidAsync(userGuid);
+            
             if (user == null)
             {
+
                 return NotFound();
+
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.DeleteAsync(userGuid);
+          
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
+        
     }
 }

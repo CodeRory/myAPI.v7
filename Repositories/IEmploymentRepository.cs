@@ -9,6 +9,5 @@ namespace TodoApi.Repositories
         Task<Employment?> CreateAsync(Employment newEmployment);
         Task<Employment?> UpdateAsync(Employment updateEmployment);
         Task DeleteAsync(int userId, int employmentId);
-        Task DeleteAsync(int id, Employment employment);
     }
 }

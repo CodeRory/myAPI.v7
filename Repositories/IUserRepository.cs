@@ -4,11 +4,11 @@ namespace TodoApi.Repositories
 {
     public interface IUserRepository
     {
-        Task<IReadOnlyCollection<User>> FindAsync(int userId);
+        Task<IReadOnlyCollection<User>> FindAsync();
         Task<User?> GetAsync(int id);
-        Task<User?> GetByGuidAsync(string guid);
+        Task<User?> GetByGuidAsync(Guid guid);
         Task<User?> CreateAsync(User newUser);
         Task<User?> UpdateAsync(User updatedUser);
-        Task DeleteAsync(string userGuid);
+        Task DeleteAsync(Guid userGuid);
     }
 }

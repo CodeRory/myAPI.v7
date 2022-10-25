@@ -34,15 +34,15 @@ namespace TodoApi.Repositories
 
         }
 
-        public async Task DeleteAsync(string userGuid)
+        public async Task DeleteAsync(Guid userGuid)
         {
 
-            Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
+           
 
             //We have to change our DELETE query
             var user = await _dbContext.Users
                 .AsNoTracking()
-                .Where(u => u.UniqueId == guid)
+                .Where(u => u.UniqueId == userGuid)
                 .SingleOrDefaultAsync();
 
             if (user == null)
@@ -56,21 +56,16 @@ namespace TodoApi.Repositories
 
         }
 
-        public async Task<IReadOnlyCollection<User?>> FindAsync(int userId)
+        public async Task<IReadOnlyCollection<User>> FindAsync()
         {
-            User? user = await _dbContext.Users
-                .AsNoTracking()
-                .Include(u => u.Address)
-                .Include(e => e.Employments)
-                .SingleOrDefaultAsync(u => u.Id == userId);
+            /* return await _dbContext.Users.ToListAsync();*/
+            return await _dbContext.Users
+                 .AsNoTracking()
+                 .Include(u => u.Address)
+                 .Include(e => e.Employments)
+                 .ToListAsync();
 
-            if (user == null)
-            {
-                return null;
-            }
 
-            //Is this going to work?
-            return (IReadOnlyCollection<User?>)user;
         }
 
         public async Task<User?> GetAsync(int id)
@@ -90,10 +85,8 @@ namespace TodoApi.Repositories
             return user;
         }
 
-        public async Task<User?> GetByGuidAsync(string userGuid)
+        public async Task<User?> GetByGuidAsync(Guid guid)
         {
-            Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
-
             var user = await _dbContext.Users
                 .AsNoTracking()
                 .Include(a => a.Address)

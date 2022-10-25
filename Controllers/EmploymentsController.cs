@@ -23,7 +23,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployments(string userGuid)
+        public async Task<IActionResult> GetEmployments(Guid userGuid)
         {
             User? user = await _userRepository.GetByGuidAsync(userGuid);
 
@@ -36,7 +36,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string userGuid, int id)
+        public async Task<IActionResult> DeleteUser(Guid userGuid, int id)
         {
             User? user = await _userRepository.GetByGuidAsync(userGuid);
                 
@@ -54,13 +54,13 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            await _employmentRepository.DeleteAsync(id, employment);
+            await _employmentRepository.DeleteAsync(id, employment.Id);
 
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser(string userGuid, Employment requestEmployment)
+        public async Task<IActionResult> PostUser(Guid userGuid, Employment requestEmployment)
         {
 
             //VALIDATIONS
@@ -106,7 +106,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> PutUser(string userGuid, int id, Employment requestEmployment) // we use from body when we use information from the payload
+        public async Task<ActionResult<User>> PutUser(Guid userGuid, int id, Employment requestEmployment) // we use from body when we use information from the payload
         {
             //VALIDATIONS
             if (string.IsNullOrEmpty(requestEmployment.Company))
@@ -132,9 +132,7 @@ namespace TodoApi.Controllers
                 ModelState.AddModelError(nameof(requestEmployment.StartDate), "Start date is wrong");
                 return BadRequest(ModelState);
             }
-
-
-            Guid guid = Guid.TryParse(userGuid, out Guid parsedGuid) ? parsedGuid : Guid.Empty;
+                        
 
             User? user = await _userRepository.GetByGuidAsync(userGuid);
 
@@ -168,7 +166,7 @@ namespace TodoApi.Controllers
 
 
         [HttpGet("current")]
-        public async Task<ActionResult<User>> GetCurrentEmployment(string userGuid) // we use from body when we use information from the payload
+        public async Task<ActionResult<User>> GetCurrentEmployment(Guid userGuid) // we use from body when we use information from the payload
         {
             User? user = await _userRepository.GetByGuidAsync(userGuid);
 
