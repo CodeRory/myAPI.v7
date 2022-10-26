@@ -16,7 +16,7 @@ namespace TodoApi.Controllers
        
         public EmploymentsController(
             IUserRepository userRepository,
-            EmploymentRepository employmentRepository)
+            IEmploymentRepository employmentRepository)
         {
             _employmentRepository = employmentRepository;
             _userRepository = userRepository;

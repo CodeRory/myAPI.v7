@@ -53,15 +53,12 @@ namespace TodoApi.Repositories
         }
 
         public async Task<IReadOnlyCollection<User>> FindAsync()
-        {
-            /* return await _dbContext.Users.ToListAsync();*/
+        {            
             return await _dbContext.Users
                  .AsNoTracking()
                  .Include(u => u.Address)
                  .Include(e => e.Employments)
                  .ToListAsync();
-
-
         }
 
         public async Task<User?> GetAsync(int id)

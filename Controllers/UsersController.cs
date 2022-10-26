@@ -17,13 +17,13 @@ namespace TodoApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IEmploymentRepository _employmentRepository;
+        //private readonly IEmploymentRepository _employmentRepository;
 
         public UsersController(
-            IUserRepository userRepository,
-            EmploymentRepository employmentRepository)
+            IUserRepository userRepository/*,*/
+            /*EmploymentRepository employmentRepository*/)
         {
-            _employmentRepository = employmentRepository;
+            //_employmentRepository = employmentRepository;
             _userRepository = userRepository;
         }
 
