@@ -4,22 +4,25 @@ using TodoApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-
 // Dependency injection
 builder.Services.AddScoped<IEmploymentRepository, EmploymentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// Add services to the container.
+builder.Services.AddControllers();
+
 builder.Services.AddDbContext<TodoContext>(opt =>
     opt.UseInMemoryDatabase("TodoList"));
+
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "TodoApi", Version = "v1" });
 });
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (builder.Environment.IsDevelopment())
@@ -29,6 +32,9 @@ if (builder.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
+//THESE ARE MIDDLEWARE
 app.UseHttpsRedirection();
 
 app.UseRouting();

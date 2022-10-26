@@ -35,11 +35,7 @@ namespace TodoApi.Repositories
         }
 
         public async Task DeleteAsync(Guid userGuid)
-        {
-
-           
-
-            //We have to change our DELETE query
+        {                 
             var user = await _dbContext.Users
                 .AsNoTracking()
                 .Where(u => u.UniqueId == userGuid)
