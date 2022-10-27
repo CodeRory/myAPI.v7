@@ -9,15 +9,18 @@ namespace TodoApi.Repositories
         private readonly TodoContext _dbContext;
 
         public UserRepository(TodoContext dbContext)
-        { 
+        {
             _dbContext = dbContext;
         }
 
         public async Task<User?> CreateAsync(User newUser)
         {
-            //Save
+            newUser.UniqueId = Guid.NewGuid();
+            
             User user = new User
+
             {
+                UniqueId = newUser.UniqueId,
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Age = newUser.Age,
@@ -30,12 +33,12 @@ namespace TodoApi.Repositories
 
             await _dbContext.SaveChangesAsync();
 
-            return await GetAsync(user.Id);            
+            return await GetAsync(user.Id);
 
         }
 
         public async Task DeleteAsync(Guid userGuid)
-        {                 
+        {
             var user = await _dbContext.Users
                 .AsNoTracking()
                 .Where(u => u.UniqueId == userGuid)
@@ -52,13 +55,13 @@ namespace TodoApi.Repositories
 
         }
 
-        public async Task<IReadOnlyCollection<User>> FindAsync()
-        {            
+        public async Task<ActionResult<IEnumerable<User>>> FindAsync()
+        {
             return await _dbContext.Users
-                 .AsNoTracking()
-                 .Include(u => u.Address)
-                 .Include(e => e.Employments)
-                 .ToListAsync();
+                     .AsNoTracking()
+                     .Include(a => a.Address)
+                     .Include(e => e.Employments)
+                     .ToListAsync();           
         }
 
         public async Task<User?> GetAsync(int id)
@@ -85,14 +88,14 @@ namespace TodoApi.Repositories
                 .Include(a => a.Address)
                 .Include(e => e.Employments)
                 .Where(u => u.UniqueId == guid)
-                .SingleOrDefaultAsync(); 
+                .SingleOrDefaultAsync();
 
             if (user == null)
             {
                 return null;
             }
 
-            return user; 
+            return user;
         }
 
         public async Task<User?> UpdateAsync(User updatedUser)
@@ -102,7 +105,7 @@ namespace TodoApi.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == updatedUser.Id)
                 .SingleOrDefaultAsync();
-            
+
 
             if (user == null)
             {

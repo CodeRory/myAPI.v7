@@ -1,4 +1,6 @@
-﻿namespace TodoApi.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace TodoApi.Models
 {
     public class User
     {
@@ -14,6 +16,7 @@
         public int? Age { get; set; } //MANDATORY
         public DateTime? Birthday { get; set; } //MANDATORY
         public Address? Address { get; set; }
-        public List<Employment> Employments { get; set; }   
+        public List<Employment> Employments { get; set; }
+       
     }
 }

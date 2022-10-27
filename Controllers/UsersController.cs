@@ -28,10 +28,10 @@ namespace TodoApi.Controllers
         }
 
         
-        [HttpGet]
+        [HttpGet]       
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            User? user = (User?)await _userRepository.FindAsync();
+            var user = await _userRepository.FindAsync();
 
             if (user == null)
             {
