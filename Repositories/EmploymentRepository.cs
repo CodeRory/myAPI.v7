@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 
 namespace TodoApi.Repositories
@@ -31,7 +32,7 @@ namespace TodoApi.Repositories
             return await GetAsync(employment.UserId, employment.Id);
         }
 
-        public async Task DeleteAsync(int userId, int employmentId)
+        public async Task<Employment?> DeleteAsync(int userId, int employmentId)
         {
             Employment? employment = await _dbContext.Employments
                 .AsNoTracking()
@@ -40,21 +41,23 @@ namespace TodoApi.Repositories
 
             if(employment == null)
             {
-                return;
+                return null;
             }
 
             _dbContext.Employments.Remove(employment);
 
             await _dbContext.SaveChangesAsync();
+
+            return employment;
         }
 
-        public async Task<IReadOnlyCollection<Employment>> FindAsync(int userId)
+        public async Task<IReadOnlyCollection<Employment>> FindAsync(Guid guid)
         {
             User? user = await _dbContext.Users
                 .AsNoTracking()
                 .Include(u => u.Address)
                 .Include(e => e.Employments)
-                .SingleOrDefaultAsync(u => u.Id == userId);
+                .SingleOrDefaultAsync(u => u.UniqueId == guid);
 
             if (user == null)
             {
@@ -65,6 +68,27 @@ namespace TodoApi.Repositories
                 .AsNoTracking()
                 .Where(e => e.UserId == user.Id)
                 .ToListAsync();
+        }
+
+
+        public async Task<Employment?> FindAsyncCurrent(Guid guid)
+        {
+            User? user = await _dbContext.Users
+                .AsNoTracking()
+                .Include(u => u.Address)
+                .Include(e => e.Employments)
+                .SingleOrDefaultAsync(u => u.UniqueId == guid);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return await _dbContext.Employments
+                .AsNoTracking()
+                .Where(e => e.UserId == user.Id)
+                .OrderByDescending(e => e.StartDate)
+                .FirstOrDefaultAsync();            
         }
 
         public async Task<Employment?> GetAsync(int userId, int employmentId)

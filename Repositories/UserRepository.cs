@@ -15,7 +15,7 @@ namespace TodoApi.Repositories
 
         public async Task<User?> CreateAsync(User newUser)
         {
-            newUser.UniqueId = Guid.NewGuid();
+            newUser.UniqueId = Guid.NewGuid();            
             
             User user = new User
 

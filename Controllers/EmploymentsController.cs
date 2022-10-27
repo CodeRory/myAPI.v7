@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TodoApi.Extensions;
 using TodoApi.Models;
 using TodoApi.Repositories;
@@ -32,13 +33,13 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            return Ok(await _employmentRepository.FindAsync(user.Id));
+            return Ok(await _employmentRepository.FindAsync(userGuid));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid userGuid, int id)
+        public async Task<IActionResult> DeleteUser(Guid userGuid, int myId)
         {
-            User? user = await _userRepository.GetByGuidAsync(userGuid);
+            var user = await _userRepository.GetByGuidAsync(userGuid);
                 
 
             if (user == null)
@@ -46,7 +47,7 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            Employment? employment = (Employment?)await _employmentRepository.FindAsync(id);
+            var employment = await _employmentRepository.FindAsync(userGuid);
                 
 
             if (employment == null)
@@ -54,7 +55,9 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            await _employmentRepository.DeleteAsync(id, employment.Id);
+
+
+            //await _employmentRepository.DeleteAsync(myId, employment.id);
 
             return NoContent();
         }
@@ -140,7 +143,7 @@ namespace TodoApi.Controllers
             {
                 return NotFound();
             }
-            Employment? employment = (Employment?)await _employmentRepository.FindAsync(id);
+            Employment? employment = (Employment?)await _employmentRepository.FindAsync(userGuid);
 
             if (employment == null)
             {
@@ -175,7 +178,9 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            Employment? employment = (Employment?)await _employmentRepository.FindAsync(user.Id);
+            var employment  = await _employmentRepository.FindAsyncCurrent(userGuid);
+
+            
 
             if (employment == null)
             {
@@ -184,5 +189,7 @@ namespace TodoApi.Controllers
 
             return Ok(employment);
         }
+
+        
     }
 }
