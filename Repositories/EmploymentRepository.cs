@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using TodoApi.Models;
 
 namespace TodoApi.Repositories
@@ -29,17 +30,29 @@ namespace TodoApi.Repositories
 
             await _dbContext.SaveChangesAsync();
 
-            return await GetAsync(employment.UserId, employment.Id);
+            /* return await GetAsync(employment.UserId, employment.Id);*/
+            return null;
         }
 
-        public async Task<Employment?> DeleteAsync(int userId, int employmentId)
+        public async Task<Employment?> DeleteAsync(int id, int userId)
         {
-            Employment? employment = await _dbContext.Employments
+
+            var user = await _dbContext.Users
                 .AsNoTracking()
-                .Where(e => e.UserId == userId & e.Id == employmentId)
+                .Where(u => u.Id == id)
                 .SingleOrDefaultAsync();
 
-            if(employment == null)
+            if (user == null)
+            {
+                return null;
+            }
+
+            Employment? employment = await _dbContext.Employments
+               .AsNoTracking()
+               .Where(e => e.UserId == user.Id && e.Id == id)
+               .SingleOrDefaultAsync();
+
+            if (employment == null)
             {
                 return null;
             }
@@ -51,13 +64,33 @@ namespace TodoApi.Repositories
             return employment;
         }
 
-        public async Task<IReadOnlyCollection<Employment>> FindAsync(Guid guid)
+        public async Task<IReadOnlyCollection<Employment>> FindAsyncGuid(Guid guid)
         {
             User? user = await _dbContext.Users
                 .AsNoTracking()
                 .Include(u => u.Address)
                 .Include(e => e.Employments)
                 .SingleOrDefaultAsync(u => u.UniqueId == guid);
+
+            if (user == null)
+            {
+                return new List<Employment>();
+            }
+
+            return await _dbContext.Employments
+                .AsNoTracking()
+                .Where(e => e.UserId == user.Id)
+                .ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<Employment>> FindAsyncId(int id)
+
+        {
+            User? user = await _dbContext.Users
+                .AsNoTracking()
+                .Include(u => u.Address)
+                .Include(e => e.Employments)
+                .SingleOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
             {
@@ -88,17 +121,29 @@ namespace TodoApi.Repositories
                 .AsNoTracking()
                 .Where(e => e.UserId == user.Id)
                 .OrderByDescending(e => e.StartDate)
-                .FirstOrDefaultAsync();            
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Employment?> GetAsync(int userId, int employmentId)
+        public async Task<Employment?> GetAsync(int id, int userId)
         {
+
+            User? user = await _dbContext.Users
+               .AsNoTracking()
+               .Include(u => u.Address)
+               .Include(e => e.Employments)
+               .SingleOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
             Employment? employment = await _dbContext.Employments
                 .AsNoTracking()
-                .Where(e => e.UserId == userId && e.Id == employmentId)
+                .Where(e => e.UserId == user.Id && e.Id == userId)
                 .SingleOrDefaultAsync();
 
-            if(employment == null)
+            if (employment == null)
             {
                 return null;
             }
@@ -130,7 +175,9 @@ namespace TodoApi.Repositories
 
             await _dbContext.SaveChangesAsync();
 
-            return await GetAsync(employment.UserId, employment.Id);
+            /*return await GetAsync(employment.UserId, employment.Id);*/
+
+            return null;
         }
     }
 }

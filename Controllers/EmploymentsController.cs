@@ -33,31 +33,31 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            return Ok(await _employmentRepository.FindAsync(userGuid));
+            return Ok(await _employmentRepository.FindAsyncGuid(userGuid));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid userGuid, int myId)
+        public async Task<IActionResult> DeleteUser(int id, int userId)
         {
-            var user = await _userRepository.GetByGuidAsync(userGuid);
-                
+            //This is a good search
+            var user = await _userRepository.GetAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var employment = await _employmentRepository.FindAsync(userGuid);
-                
-
+            //Employment is failing
+            var employment = await _employmentRepository.GetAsync(user.Id, id);
+            
+            
             if (employment == null)
             {
                 return NotFound();
-            }
+            }            
+            
 
-
-
-            //await _employmentRepository.DeleteAsync(myId, employment.id);
+            await _employmentRepository.DeleteAsync(user.Id, employment.UserId);
 
             return NoContent();
         }
@@ -143,7 +143,7 @@ namespace TodoApi.Controllers
             {
                 return NotFound();
             }
-            Employment? employment = (Employment?)await _employmentRepository.FindAsync(userGuid);
+            Employment? employment = (Employment?)await _employmentRepository.FindAsyncGuid(userGuid);
 
             if (employment == null)
             {
