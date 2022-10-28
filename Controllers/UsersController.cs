@@ -194,16 +194,16 @@ namespace TodoApi.Controllers
                 }
             }
 
-            /*await _context.SaveChangesAsync(); //SAVING*/
+            User? updatedUser = await _userRepository.UpdateAsync(userEntity); //SAVING*/
 
-            var resultUser = await _userRepository.GetByGuidAsync(guid);          
+            /*var resultUser = await _userRepository.GetByGuidAsync(guid);       */   
 
-            if (resultUser == null)
+            if (updatedUser == null)
             {
                 return NotFound();
             }
 
-            return resultUser;
+            return updatedUser;
         }
 
         [HttpPost]

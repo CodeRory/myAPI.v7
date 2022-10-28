@@ -105,7 +105,7 @@ namespace TodoApi.Repositories
         }
 
 
-        public async Task<Employment?> FindAsyncCurrent(Guid guid)
+        public async Task<Employment?> GetCurrentEmploymentAsync(Guid guid)
         {
             User? user = await _dbContext.Users
                 .AsNoTracking()
@@ -125,23 +125,12 @@ namespace TodoApi.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Employment?> GetAsync( int id, int userId)
-        {
-
-            User? user = await _dbContext.Users
-               .AsNoTracking()
-               .Include(u => u.Address)
-               .Include(e => e.Employments)
-               .SingleOrDefaultAsync(u => u.Id == id);
-
-            if (user == null)
-            {
-                return null;
-            }
+        public async Task<Employment?> GetAsync(int userId/*this is for user*/, int id)
+        {            
 
             Employment? employment = await _dbContext.Employments
                 .AsNoTracking()
-                .Where(e => e.UserId == user.Id && e.Id == userId)
+                .Where(e => e.UserId == userId && e.Id == id)
                 .SingleOrDefaultAsync();
 
             if (employment == null)

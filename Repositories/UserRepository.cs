@@ -101,8 +101,9 @@ namespace TodoApi.Repositories
         public async Task<User?> UpdateAsync(User updatedUser)
         {
 
-            User? user = await _dbContext.Users
-                .AsNoTracking()
+            User? user = await _dbContext.Users               
+                .Include(a =>a.Address)
+                .Include(e => e.Employments)
                 .Where(e => e.Id == updatedUser.Id)
                 .SingleOrDefaultAsync();
 
@@ -112,11 +113,20 @@ namespace TodoApi.Repositories
                 return null;
             }
 
-            /*return user;*/
+            //THIS IS WORKING
+            //THIS IS WORKING
+            //THIS IS WORKING
+            //THIS IS WORKING
+            //THIS IS WORKING
 
             user.FirstName = updatedUser.FirstName;
             user.LastName = updatedUser.LastName;
             user.Birthday = updatedUser.Birthday;
+
+            //THIS IS NOT WORKING
+            //THIS IS NOT WORKING
+            //THIS IS NOT WORKING
+            //THIS IS NOT WORKING
 
             user.Address!.Street = string.IsNullOrEmpty(updatedUser.Address?.Street) ? null : updatedUser.Address.Street;
             user.Address!.City = updatedUser.Address!.City;
@@ -147,11 +157,11 @@ namespace TodoApi.Repositories
                 employmentEntity.Salary = employment.Salary;
             }
 
-            _dbContext.Entry(user).State = EntityState.Modified;
+            /*_dbContext.Entry(user).State = EntityState.Modified;*/
 
             await _dbContext.SaveChangesAsync();
 
-            return await GetAsync(user.Id);
+            return await GetAsync(updatedUser.Id);
         }
     }
 }

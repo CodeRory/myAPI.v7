@@ -47,7 +47,7 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
             
-            //Employment is failing
+            //Employment just for one employment
             var employment = await _employmentRepository.GetAsync(user.Id, id);
             
             
@@ -178,7 +178,7 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            var employment  = await _employmentRepository.FindAsyncCurrent(userGuid);
+            var employment  = await _employmentRepository.GetCurrentEmploymentAsync(userGuid);
 
             
 
