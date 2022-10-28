@@ -37,16 +37,16 @@ namespace TodoApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id, int userId)
+        public async Task<IActionResult> DeleteUser(Guid userGuid, int id)
         {
             //This is a good search
-            var user = await _userRepository.GetAsync(id);
+            var user = await _userRepository.GetByGuidAsync(userGuid);
 
             if (user == null)
             {
                 return NotFound();
             }
-
+            
             //Employment is failing
             var employment = await _employmentRepository.GetAsync(user.Id, id);
             
@@ -57,13 +57,13 @@ namespace TodoApi.Controllers
             }            
             
 
-            await _employmentRepository.DeleteAsync(user.Id, employment.UserId);
+            await _employmentRepository.DeleteAsync(employment.UserId, employment.Id);
 
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostUser(Guid userGuid, Employment requestEmployment)
+        public async Task<IActionResult> CreateEmployment(Guid userGuid, Employment requestEmployment)
         {
 
             //VALIDATIONS
@@ -98,7 +98,7 @@ namespace TodoApi.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return null;
             }
 
             await _employmentRepository.CreateAsync(requestEmployment);     
@@ -109,7 +109,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> PutUser(Guid userGuid, int id, Employment requestEmployment) // we use from body when we use information from the payload
+        public async Task<IActionResult> UpdateEmployment(Guid userGuid, int id, Employment requestEmployment) // we use from body when we use information from the payload
         {
             //VALIDATIONS
             if (string.IsNullOrEmpty(requestEmployment.Company))
@@ -164,7 +164,7 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
-            return resultUser;
+            return Ok(resultUser);
         }
 
 

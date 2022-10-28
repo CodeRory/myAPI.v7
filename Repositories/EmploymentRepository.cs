@@ -19,6 +19,7 @@ namespace TodoApi.Repositories
             // save
             Employment employment = new Employment
             {
+                
                 Company = newEmployment.Company,
                 MonthOfExperince = newEmployment.MonthOfExperince,
                 Salary = newEmployment.Salary,
@@ -30,16 +31,16 @@ namespace TodoApi.Repositories
 
             await _dbContext.SaveChangesAsync();
 
-            /* return await GetAsync(employment.UserId, employment.Id);*/
-            return null;
+            return await GetAsync(employment.UserId, employment.Id);
+            
         }
 
-        public async Task<Employment?> DeleteAsync(int id, int userId)
+        public async Task<Employment?> DeleteAsync(int userId, int id)
         {
 
             var user = await _dbContext.Users
                 .AsNoTracking()
-                .Where(u => u.Id == id)
+                .Where(u => u.Id == userId)
                 .SingleOrDefaultAsync();
 
             if (user == null)
@@ -124,7 +125,7 @@ namespace TodoApi.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Employment?> GetAsync(int id, int userId)
+        public async Task<Employment?> GetAsync( int id, int userId)
         {
 
             User? user = await _dbContext.Users
