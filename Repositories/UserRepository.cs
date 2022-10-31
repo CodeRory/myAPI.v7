@@ -15,11 +15,13 @@ namespace TodoApi.Repositories
 
         public async Task<User?> CreateAsync(User newUser)
         {
+            
             newUser.UniqueId = Guid.NewGuid();            
             
             User user = new User
 
-            {
+            {   
+                Id = newUser.Id,
                 UniqueId = newUser.UniqueId,
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
@@ -27,6 +29,7 @@ namespace TodoApi.Repositories
                 Birthday = newUser.Birthday,
                 Address = newUser.Address,
                 Employments = newUser.Employments
+
             };
 
             _dbContext.Users.Add(user);

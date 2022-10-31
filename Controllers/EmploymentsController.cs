@@ -122,7 +122,7 @@ namespace TodoApi.Controllers
             {
                 return null;
             }
-
+            
             await _employmentRepository.CreateAsync(requestEmployment);     
 
             /*await _employmentRepository.SaveChangesAsync();*/
@@ -157,7 +157,7 @@ namespace TodoApi.Controllers
                 ModelState.AddModelError(nameof(requestEmployment.StartDate), "Start date is wrong");
                 return BadRequest(ModelState);
             }
-                        
+
 
             User? user = await _userRepository.GetByGuidAsync(userGuid);
 
@@ -165,7 +165,8 @@ namespace TodoApi.Controllers
             {
                 return NotFound();
             }
-            Employment? employment = (Employment?)await _employmentRepository.FindAsyncGuid(userGuid);
+
+            var employment = await _employmentRepository.GetAsync(user.Id, id);
 
             if (employment == null)
             {
@@ -175,10 +176,12 @@ namespace TodoApi.Controllers
             //NOW IS CREATING PROPERLY BUT NOW CORRECTLY ASSIGNED
             employment.StartDate = requestEmployment.StartDate;
             employment.EndDate = requestEmployment.EndDate;
+            employment.MonthOfExperince = requestEmployment.MonthOfExperince;
             employment.Company = requestEmployment.Company;
             employment.Salary = requestEmployment.Salary;
 
-           /* await _dbContext.SaveChangesAsync(); //SAVING*/
+            await _employmentRepository.UpdateAsync(employment);
+
             User? resultUser = await _userRepository.GetByGuidAsync(userGuid);
 
             if (resultUser == null)
