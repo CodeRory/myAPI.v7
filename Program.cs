@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TodoApi.Models;
 using TodoApi.Repositories;
 
@@ -23,10 +25,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-/*app.Run(async context =>
-{
-    await context.Response.WriteAsync("Hello from 2nd delegate");
-});*/
+
 
 // Configure the HTTP request pipeline.
 if (builder.Environment.IsDevelopment())
@@ -42,18 +41,24 @@ if (builder.Environment.IsDevelopment())
 
 else
 {
-    app.UseExceptionHandler("/Error");
-    
-    app.UseHsts();
+    app.UseMiddleware
+
+
+    //THIS IS FROM AN EXERCISE
+    /*app.UseExceptionHandler("/Error");    
+    app.UseHsts();*/
 }
 
-builder.Services.Configure<IdentityOptions>(options =>
+
+// THIS IS ALSO FROM ANOTHER EXERCISE
+/*builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
+
     options.Password.RequiredLength = 6;
 
     options.Password.RequiredUniqueChars = 1;
@@ -67,7 +72,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.AllowedUserNameCharacters =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
-});
+});*/
 
 
 
