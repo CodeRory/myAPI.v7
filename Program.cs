@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using TodoApi.Middleware;
 using TodoApi.Models;
 using TodoApi.Repositories;
 
@@ -33,49 +34,16 @@ if (builder.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+
 }
-
-//THIS LINE IS NEW FOR MIDDLEWARE EXERCISE
-//THIS LINE IS NEW FOR MIDDLEWARE EXERCISE
-//THIS LINE IS NEW FOR MIDDLEWARE EXERCISE
-
+//THIS ELSE IS FROM EXERCISE, SHOULD I USE ELSE OR JUST INTO THE FIREST IF?
 else
 {
-    app.UseMiddleware
-
-
-    //THIS IS FROM AN EXERCISE
-    /*app.UseExceptionHandler("/Error");    
-    app.UseHsts();*/
+   // app.UseMiddleware    
 }
 
-
-// THIS IS ALSO FROM ANOTHER EXERCISE
-/*builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Password settings.
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
-
-    options.Password.RequiredLength = 6;
-
-    options.Password.RequiredUniqueChars = 1;
-
-    // Lockout settings.
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    // User settings.
-    options.User.AllowedUserNameCharacters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-    options.User.RequireUniqueEmail = false;
-});*/
-
-
-
+app.UseMiddleware<MyMiddleware>();
 
 //THESE ARE MIDDLEWARE
 app.UseHttpsRedirection();
