@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BadRequestException = Microsoft.IdentityModel.SecurityTokenService.BadRequestException;
 using Microsoft.Extensions.Logging;
 using static Umbraco.Core.Collections.TopoGraph;
+using System.Web.Http;
 
 namespace TodoApi.Middleware
 {
@@ -47,30 +48,58 @@ namespace TodoApi.Middleware
         //IF SOMETHING FAILS, INVOKE IS GOING TO CALL THIS METHOD, THAT IT IS GOING TO BE USED FOR HANDLE ERRORS. 
         private Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger logger)
         {
-            string result; 
+            string result;
 
-            switch (exception)
+            //ONLY IF WITHOUT ELSE BECAUSE IT IS FASTER
+            if(exception.Message == "validationException")
             {
-                case ValidationException validationException:
-                    context.Response.WriteAsync("Validation error");
-                    result = "There is an error in the validation";
-                    logger.LogInformation(result);
-                    break;
-                case BadRequestException badRequestException:
-                    context.Response.WriteAsync("There is an error on the request");
-                    result = "There is an error on the request";
-                    break;
-                case NotFoundException notFoundException:
-                    context.Response.WriteAsync("Not found exception");
-                    result = "Not found!";
-                    break;
-                default:
-                    context.Response.WriteAsync("There is an error");
-                    result = "Internal server error!";
-                    break;
-            }           
+                context.Response.WriteAsync("Validation error");
+                result = "There is an error in the validation";
+                logger.LogInformation(result);
+            }
 
-            return context.Response.WriteAsync(result);
+            if(exception is BadRequestException)
+            {
+                context.Response.WriteAsync("There is an error on the request");
+                result = "There is an error on the request";
+            }
+
+            if(exception is NotFoundException)
+            {
+                context.Response.WriteAsync("Not found exception");
+                result = "Not found!";
+            }
+
+            if(exception is InternalServerErrorResult)
+            {
+                context.Response.WriteAsync("There is an error");
+                result = "Internal server error!";
+            }    
+
+            //THIS IS NOT WORKING
+            /* switch (exception)
+             {
+                 case ValidationException validationException:
+                     context.Response.WriteAsync("Validation error");
+                     result = "There is an error in the validation";
+                     logger.LogInformation(result);
+                     break;
+                 case BadRequestException badRequestException:
+                     context.Response.WriteAsync("There is an error on the request");
+                     result = "There is an error on the request";
+                     break;
+                 case NotFoundException notFoundException:
+                     context.Response.WriteAsync("Not found exception");
+                     result = "Not found!";
+                     break;
+                 default:
+                     context.Response.WriteAsync("There is an error");
+                     result = "Internal server error!";
+                     break;
+             }           */
+
+           // return context.Response.WriteAsync(result);
+           return context.Response.WriteAsync("hola");
         }        
     }
 
