@@ -126,15 +126,14 @@ namespace TodoApi.Repositories
 
             //THIS IS WORKING
             //THIS IS WORKING
-            //Both are necessary, this updating and UserController one
-            
+            //Both are necessary, this updating and UserController one            
             user.Address!.Street = string.IsNullOrEmpty(updatedUser.Address?.Street) ? null : updatedUser.Address.Street;
             user.Address!.City = updatedUser.Address!.City;
             user.Address!.PostCode = updatedUser.Address.PostCode;
 
 
-            //THIS IS NOT WORKING
-            //THIS IS NOT WORKING
+            //THIS IS WORKING
+            //THIS IS WORKING
             //I have changed user.Employments for updateUser.Employment
             foreach (Employment employment in updatedUser.Employments) //take a look, we are using user.Employments
             {

@@ -2217,3 +2217,7 @@ C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\TodoApi.pdb
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\TodoApi.genruntimeconfig.cache
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\ref\TodoApi.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\microsoft.identitymodel.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\SendGrid.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\StarkbankEcdsa.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll

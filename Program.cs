@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System.ComponentModel.DataAnnotations;
 using TodoApi.Middleware;
 using TodoApi.Models;
@@ -27,23 +29,22 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 
-
 // Configure the HTTP request pipeline.
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
-    
+    app.UseSwaggerUI();   
 
 }
 //THIS ELSE IS FROM EXERCISE, SHOULD I USE ELSE OR JUST INTO THE FIREST IF?
-else
+/*else
 {
-   // app.UseMiddleware    
+    // app.UseMiddleware
+    
 }
+*/
 
-app.UseMiddleware<MyMiddleware>();
 
 //THESE ARE MIDDLEWARE
 app.UseHttpsRedirection();
@@ -51,6 +52,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+
+//According to the documentation, custom middleware should be here, after Authorization
+
+app.UseMiddleware<MyMiddleware>();
+
 
 app.UseEndpoints(endpoints =>
 {
