@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using TodoApi.Middleware;
 using TodoApi.Models;
 using TodoApi.Repositories;
+using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.Controllers
 {
@@ -16,14 +19,13 @@ namespace TodoApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILogger<UsersController> _logger;
         private readonly IUserRepository _userRepository;
         //private readonly IEmploymentRepository _employmentRepository;
 
-        public UsersController(
-            IUserRepository userRepository/*,*/
-            /*EmploymentRepository employmentRepository*/)
+        public UsersController(IUserRepository userRepository, ILogger<UsersController> logger)
         {
-            //_employmentRepository = employmentRepository;
+            _logger = logger;
             _userRepository = userRepository;
         }
 
@@ -216,8 +218,12 @@ namespace TodoApi.Controllers
             //VALIDATIONS
             if (string.IsNullOrEmpty(user.FirstName))
             {
-                ModelState.AddModelError(nameof(user.FirstName), "First Name is mandatory");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError(nameof(user.FirstName), "First Name is mandatory");
+
+                _logger.LogInformation("First logger");
+                _logger.LogWarning("Second logger");
+                //throw new Exception("validationException");
+                throw new Exception("validationException");
             }
 
             if (string.IsNullOrEmpty(user.LastName))
