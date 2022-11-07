@@ -48,32 +48,26 @@ namespace TodoApi.Middleware
         //IF SOMETHING FAILS, INVOKE IS GOING TO CALL THIS METHOD, THAT IT IS GOING TO BE USED FOR HANDLE ERRORS. 
         private Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger logger)
         {
-            string result;
-
+            
             //ONLY IF WITHOUT ELSE BECAUSE IT IS FASTER
             if(exception.Message == "validationException")
             {
-                context.Response.WriteAsync("Validation error");
-                result = "There is an error in the validation";
-                logger.LogInformation(result);
+                context.Response.WriteAsync("Validation error");                
             }
 
-            if(exception is BadRequestException)
+            if(exception.Message is "badRequest")
             {
-                context.Response.WriteAsync("There is an error on the request");
-                result = "There is an error on the request";
+                context.Response.WriteAsync("There is an error on the request");                
             }
 
-            if(exception is NotFoundException)
+            if(exception.Message == "notFound")
             {
                 context.Response.WriteAsync("Not found exception");
-                result = "Not found!";
             }
 
             if(exception is InternalServerErrorResult)
             {
                 context.Response.WriteAsync("There is an error");
-                result = "Internal server error!";
             }    
 
             //THIS IS NOT WORKING
@@ -99,7 +93,7 @@ namespace TodoApi.Middleware
              }           */
 
            // return context.Response.WriteAsync(result);
-           return context.Response.WriteAsync("hola");
+           return context.Response.WriteAsync("\nThis is a Middleware message");
         }        
     }
 
