@@ -12,6 +12,7 @@ using TodoApi.Models;
 using TodoApi.Repositories;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using TodoApi.Exceptions;
 
 namespace TodoApi.Controllers
 {
@@ -54,7 +55,7 @@ namespace TodoApi.Controllers
             if (user == null)
             {
                 //return NotFound();
-                throw new Exception("notFound");
+                throw new NotFoundException();
             }
 
             return user;
@@ -75,37 +76,37 @@ namespace TodoApi.Controllers
 
             if (string.IsNullOrEmpty(user.LastName))
             {
-                ModelState.AddModelError(nameof(user.LastName), "Last Name is mandatory");
-                return BadRequest(ModelState);
+                /*ModelState.AddModelError(nameof(user.LastName), "Last Name is mandatory");
+                return BadRequest(ModelState);*/
                 throw new Exception("badRequest");
             }
 
             if (user.Age == null)
             {
-                ModelState.AddModelError(nameof(user.Age), "Age is mandatory");
-                return BadRequest(ModelState);
+               /* ModelState.AddModelError(nameof(user.Age), "Age is mandatory");
+                return BadRequest(ModelState);*/
                 throw new Exception("badRequest");
             }
 
             if (user.Birthday == null)
             {
-                ModelState.AddModelError(nameof(user.Birthday), "Birthday is mandatory");
-                return BadRequest(ModelState);
+                /*ModelState.AddModelError(nameof(user.Birthday), "Birthday is mandatory");
+                return BadRequest(ModelState);*/
                 throw new Exception("badRequest");
             }
 
             //ADDRESS VALIDATIONS
             if (string.IsNullOrEmpty(user.Address?.Street))
             {
-                ModelState.AddModelError(nameof(user.Address.Street), "Street is mandatory");
-                return BadRequest(ModelState);
+                /*ModelState.AddModelError(nameof(user.Address.Street), "Street is mandatory");
+                return BadRequest(ModelState);*/
                 throw new Exception("badRequest");
             }
 
             if (string.IsNullOrEmpty(user.Address.City))
             {
-                ModelState.AddModelError(nameof(user.Address.City), "City is mandatory");
-                return BadRequest(ModelState);
+               /* ModelState.AddModelError(nameof(user.Address.City), "City is mandatory");
+                return BadRequest(ModelState);*/
                 throw new Exception("badRequest");
             }
 
@@ -298,11 +299,15 @@ namespace TodoApi.Controllers
                     throw new Exception("validationException");
                 }
             }
-
             
-            await _userRepository.CreateAsync(user);
+            User? createdUser = await _userRepository.CreateAsync(user);
+            
+            if (createdUser == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(user);
+            return Ok(createdUser);
         }
                 
         [HttpDelete("{userGuid}")]

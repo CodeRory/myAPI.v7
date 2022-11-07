@@ -73,6 +73,8 @@ namespace TodoApi.Repositories
 
             User? user = await _dbContext.Users
                 .AsNoTracking()
+                .Include(a =>a.Address)
+                .Include(e =>e.Employments)
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
 

@@ -120,14 +120,17 @@ namespace TodoApi.Controllers
 
             if (user == null)
             {
-                return null;
+                return NotFound();
+            }  
+
+            Employment? createdEmployment = await _employmentRepository.CreateAsync(requestEmployment);
+
+            if (createdEmployment == null)
+            {
+                return NotFound();
             }
-            
-            await _employmentRepository.CreateAsync(requestEmployment);     
 
-            /*await _employmentRepository.SaveChangesAsync();*/
-
-            return Ok(requestEmployment);
+            return Ok(createdEmployment);
         }
 
         [HttpPut("{id}")]
