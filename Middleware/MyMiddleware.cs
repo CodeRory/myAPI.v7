@@ -1,5 +1,11 @@
 ﻿
+using Microsoft.IdentityModel.Protocols.WSTrust;
+using System.Net;
+using System.Web.Mvc;
 using TodoApi.Exceptions;
+using ValidationException = TodoApi.Exceptions.ValidationException;
+using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TodoApi.Middleware
 {
@@ -12,7 +18,7 @@ namespace TodoApi.Middleware
         //We need in the constructor RequestDelegate in order to make it work
         public MyMiddleware(RequestDelegate next)
         {
-            _next = next;            
+            _next = next;
         }
 
 
@@ -23,42 +29,64 @@ namespace TodoApi.Middleware
             {
                 await _next(context); // calling next middleware
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex, logger);
             }
         }
 
+        //LET'S TRY THIS CLASS
+
+        public class NotFoundWithMessageResult
+        {
+            private string message;
+
+            public NotFoundWithMessageResult(string message)
+            {
+                this.message = message;
+            }
+
+            public Task<HttpResponseMessage> ExecuteError()
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                response.Content = new StringContent(message);
+                return Task.FromResult(response);
+            }
+        }
+
+        NotFoundWithMessageResult NotFoundWithMessageRes = new NotFoundWithMessageResult("Validation error");
+
         //IF SOMETHING FAILS, INVOKE IS GOING TO CALL THIS METHOD, THAT IT IS GOING TO BE USED FOR HANDLE ERRORS. 
         private Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger logger)
-        {          
-             
+        {
 
-            
             switch (exception)
-             {
+            {
 
                 ///USE VALIDATION ERROR AND RETURN A BADREQUEST STATUS
+                case ValidationException validationException:
+                    context.Response.WriteAsync("Validation error");
+                    NotFoundWithMessageRes.ExecuteError();
+                    
+                    break;
+                case NotFoundException notFoundException:
+                    context.Response.WriteAsync("Not found exception");
+                    break;
+                default:
+                    context.Response.WriteAsync("There is an error");
+                    break;
+            }
+
+            return context.Response.WriteAsync("\nThis is a Middleware message");
+        }
 
 
-                 /*case ValidationException validationException:
-                     context.Response.WriteAsync("Validation error");
-                     break;
-                 case BadRequestException badRequestException:
-                     context.Response.WriteAsync("There is an error on the request");
-                     break;*/
-                 case NotFoundException notFoundException:
-                     context.Response.WriteAsync("Not found exception");
-                     break;
-                 default:
-                     context.Response.WriteAsync("There is an error");
-                     break;
-             }           
-
-           // return context.Response.WriteAsync(result);
-           return context.Response.WriteAsync("\nThis is a Middleware message");
-        }        
     }
+
+
+
+
+
 
     // Extension method used to add the middleware to the HTTP request pipeline.
     public static class MiddlewareExtensions
@@ -67,5 +95,6 @@ namespace TodoApi.Middleware
         {
             return builder.UseMiddleware<MyMiddleware>();
         }
+
     }
 }

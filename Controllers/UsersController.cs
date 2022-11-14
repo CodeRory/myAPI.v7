@@ -13,6 +13,8 @@ using TodoApi.Repositories;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using TodoApi.Exceptions;
+using ValidationException = TodoApi.Exceptions.ValidationException;
+using System.Net;
 
 namespace TodoApi.Controllers
 {
@@ -220,7 +222,9 @@ namespace TodoApi.Controllers
             return updatedUser;
         }
 
+
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             //CREATING GUIDs
@@ -229,7 +233,8 @@ namespace TodoApi.Controllers
             //VALIDATIONS
             if (string.IsNullOrEmpty(user.FirstName))
             {
-                throw new Exception("validationException");
+                //BadRequest();
+                throw new ValidationException(/*BadRequest()*/);
             }
 
             if (string.IsNullOrEmpty(user.LastName))
