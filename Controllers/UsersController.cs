@@ -224,7 +224,7 @@ namespace TodoApi.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             //CREATING GUIDs
@@ -233,8 +233,9 @@ namespace TodoApi.Controllers
             //VALIDATIONS
             if (string.IsNullOrEmpty(user.FirstName))
             {
-                //BadRequest();
-                throw new ValidationException(/*BadRequest()*/);
+                //return BadRequest();
+                return BadRequest(ModelState);
+                throw new ValidationException();
             }
 
             if (string.IsNullOrEmpty(user.LastName))

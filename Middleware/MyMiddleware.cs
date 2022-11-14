@@ -7,6 +7,7 @@ using ValidationException = TodoApi.Exceptions.ValidationException;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace TodoApi.Middleware
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
@@ -36,7 +37,7 @@ namespace TodoApi.Middleware
         }
 
         //LET'S TRY THIS CLASS
-
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public class NotFoundWithMessageResult
         {
             private string message;
@@ -57,17 +58,20 @@ namespace TodoApi.Middleware
         NotFoundWithMessageResult NotFoundWithMessageRes = new NotFoundWithMessageResult("Validation error");
 
         //IF SOMETHING FAILS, INVOKE IS GOING TO CALL THIS METHOD, THAT IT IS GOING TO BE USED FOR HANDLE ERRORS. 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         private Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger logger)
         {
-
+            
             switch (exception)
             {
 
                 ///USE VALIDATION ERROR AND RETURN A BADREQUEST STATUS
                 case ValidationException validationException:
                     context.Response.WriteAsync("Validation error");
-                    NotFoundWithMessageRes.ExecuteError();
-                    
+                    //NotFoundWithMessageRes.ExecuteError();
+                    BadRequestResult result = new BadRequestResult();
+                    return BadRequest(ModelState);
+                    //return BadRequest();
                     break;
                 case NotFoundException notFoundException:
                     context.Response.WriteAsync("Not found exception");
@@ -82,8 +86,6 @@ namespace TodoApi.Middleware
 
 
     }
-
-
 
 
 

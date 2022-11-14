@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.IdentityModel.Protocols.WSTrust;
 using System.Net;
-using BadHttpRequestException = Microsoft.AspNetCore.Http.BadHttpRequestException;
+using System.Web.Http.Results;
 
 namespace TodoApi.Exceptions
 {
@@ -13,6 +13,7 @@ namespace TodoApi.Exceptions
             : base("One or more validation failures have occurred.")
         {
             /*this.statusCode = statusCode;*/
+            
         }
 
         
