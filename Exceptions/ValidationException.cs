@@ -9,13 +9,12 @@ namespace TodoApi.Exceptions
     public class ValidationException : Exception
     {       
 
-        public ValidationException(/*HttpResponse badRequest*/)
-            : base("One or more validation failures have occurred.")
+        public ValidationException(string name, string message)
+            : base($"There is an error in {name}. This field is {message}.")
         {
-            /*this.statusCode = statusCode;*/
+ 
             
         }
-
         
     }
 }

@@ -1950,7 +1950,9 @@ C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Identity.Client.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\microsoft.identitymodel.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
@@ -1985,6 +1987,7 @@ C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\NuGet.Versioning.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Owin.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Semver.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\SendGrid.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.Enrichers.Process.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.Enrichers.Thread.dll
@@ -1995,6 +1998,7 @@ C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.Sinks.Async.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.Sinks.File.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Serilog.Sinks.Map.dll
+C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\StarkbankEcdsa.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Superpower.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
@@ -2217,7 +2221,3 @@ C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\TodoApi.pdb
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\TodoApi.genruntimeconfig.cache
 C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\obj\Debug\net6.0\ref\TodoApi.dll
-C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\microsoft.identitymodel.dll
-C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\SendGrid.dll
-C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\StarkbankEcdsa.dll
-C:\Users\A10017089\OneDrive - Alight Solutions\Documents\Marino\EXERCISES\V8 API\V8\TodoApi\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll

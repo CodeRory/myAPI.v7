@@ -37,13 +37,6 @@ if (builder.Environment.IsDevelopment())
     app.UseSwaggerUI();   
 
 }
-//THIS ELSE IS FROM EXERCISE, SHOULD I USE ELSE OR JUST INTO THE FIREST IF?
-/*else
-{
-    // app.UseMiddleware
-    
-}
-*/
 
 
 //THESE ARE MIDDLEWARE
