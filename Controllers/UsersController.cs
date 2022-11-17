@@ -7,8 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using TodoApi.Middleware;
 using TodoApi.Models;
 using TodoApi.Repositories;
+using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using TodoApi.Exceptions;
+using ValidationException = TodoApi.Exceptions.ValidationException;
+using System.Net;
 
 namespace TodoApi.Controllers
 {
@@ -16,14 +22,13 @@ namespace TodoApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILogger<UsersController> _logger;
         private readonly IUserRepository _userRepository;
         //private readonly IEmploymentRepository _employmentRepository;
 
-        public UsersController(
-            IUserRepository userRepository/*,*/
-            /*EmploymentRepository employmentRepository*/)
+        public UsersController(IUserRepository userRepository, ILogger<UsersController> logger)
         {
-            //_employmentRepository = employmentRepository;
+            _logger = logger;
             _userRepository = userRepository;
         }
 
@@ -35,7 +40,7 @@ namespace TodoApi.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                throw new Exception("notFound");
             }
 
             return Ok(user);
@@ -51,7 +56,8 @@ namespace TodoApi.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                //return NotFound();
+                throw new NotFoundException();
             }
 
             return user;
@@ -65,39 +71,33 @@ namespace TodoApi.Controllers
             //USER VALIDATION
             if (string.IsNullOrEmpty(user.FirstName))
             {
-                ModelState.AddModelError(nameof(user.FirstName), "First Name is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.FirstName), "Mandatory");
             }
 
             if (string.IsNullOrEmpty(user.LastName))
             {
-                ModelState.AddModelError(nameof(user.LastName), "Last Name is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.LastName), "Mandatory");
             }
 
             if (user.Age == null)
-            {
-                ModelState.AddModelError(nameof(user.Age), "Age is mandatory");
-                return BadRequest(ModelState);
+            {              
+                throw new ValidationException(nameof(user.Age), "Mandatory");
             }
 
             if (user.Birthday == null)
             {
-                ModelState.AddModelError(nameof(user.Birthday), "Birthday is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Birthday), "Mandatory");
             }
 
             //ADDRESS VALIDATIONS
             if (string.IsNullOrEmpty(user.Address?.Street))
             {
-                ModelState.AddModelError(nameof(user.Address.Street), "Street is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Address.Street), "Mandatory");
             }
 
             if (string.IsNullOrEmpty(user.Address.City))
             {
-                ModelState.AddModelError(nameof(user.Address.City), "City is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Address.City), "Mandatory");
             }
 
             //EMPLOYEE VALIDATION
@@ -108,8 +108,7 @@ namespace TodoApi.Controllers
 
             if (query > 0)
             {
-                ModelState.AddModelError(nameof(Employment.Company), "Company must be unique");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(Employment.Company), "Mandatory");
             }
 
             //ONLY NEED ONE FOREACH
@@ -117,13 +116,11 @@ namespace TodoApi.Controllers
             {
                 if (employment.Salary == null)
                 {
-                    ModelState.AddModelError(nameof(employment.Salary), "Salary is mandatory");
-                    return BadRequest(ModelState);
+                    throw new ValidationException(nameof(employment.Salary), "Mandatory");
                 }
                 if (employment.StartDate == null)
                 {
-                    ModelState.AddModelError(nameof(employment.Salary), "Start date is mandatory");
-                    return BadRequest(ModelState);
+                    throw new ValidationException(nameof(employment.StartDate), "Mandatory");
                 }
             }
 
@@ -195,9 +192,7 @@ namespace TodoApi.Controllers
                 }
             }
 
-            User? updatedUser = await _userRepository.UpdateAsync(userEntity); //SAVING*/
-
-            /*var resultUser = await _userRepository.GetByGuidAsync(guid);       */   
+            User? updatedUser = await _userRepository.UpdateAsync(userEntity); //SAVING*/            
 
             if (updatedUser == null)
             {
@@ -206,6 +201,7 @@ namespace TodoApi.Controllers
 
             return updatedUser;
         }
+
 
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
@@ -216,39 +212,33 @@ namespace TodoApi.Controllers
             //VALIDATIONS
             if (string.IsNullOrEmpty(user.FirstName))
             {
-                ModelState.AddModelError(nameof(user.FirstName), "First Name is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.FirstName), "Mandatory");
             }
 
             if (string.IsNullOrEmpty(user.LastName))
             {
-                ModelState.AddModelError(nameof(user.LastName), "Last Name is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.LastName), "Mandatory");
             }
 
             if (user.Age == null)
             {
-                ModelState.AddModelError(nameof(user.Age), "Age is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Age), "Mandatory");
             }
 
             if (user.Birthday == null)
             {
-                ModelState.AddModelError(nameof(user.Birthday), "Birthday is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Birthday), "Mandatory");
             }
 
             //ADDRESS VALIDATIONS
             if (string.IsNullOrEmpty(user.Address?.Street))
             {
-                ModelState.AddModelError(nameof(user.Address.Street), "Street is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Address.Street), "Mandatory");
             }
 
             if (string.IsNullOrEmpty(user.Address.City))
             {
-                ModelState.AddModelError(nameof(user.Address.City), "City is mandatory");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(user.Address.City), "Mandatory");
             }
 
             //COMPANY VALIDATION
@@ -259,8 +249,7 @@ namespace TodoApi.Controllers
 
             if (query > 0)
             {
-                ModelState.AddModelError(nameof(Employment.Company), "Company must be unique");
-                return BadRequest(ModelState);
+                throw new ValidationException(nameof(Employment.Company), "Mandatory");
             }
 
             //ONLY NEED ONE FOREACH
@@ -269,21 +258,23 @@ namespace TodoApi.Controllers
 
                 if (employment.Salary == null)
                 {
-                    ModelState.AddModelError(nameof(employment.Salary), "Salary is mandatory");
-                    return BadRequest(ModelState);
+                    throw new ValidationException(nameof(Employment.Salary), "Mandatory");
                 }
 
                 if (employment.StartDate == null)
                 {
-                    ModelState.AddModelError(nameof(employment.Salary), "Start date is mandatory");
-                    return BadRequest(ModelState);
+                    throw new ValidationException(nameof(Employment.StartDate), "Mandatory");
                 }
             }
-
             
-            await _userRepository.CreateAsync(user);
+            User? createdUser = await _userRepository.CreateAsync(user);
+            
+            if (createdUser == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(user);
+            return Ok(createdUser);
         }
                 
         [HttpDelete("{userGuid}")]
@@ -298,12 +289,10 @@ namespace TodoApi.Controllers
 
             }
 
-            await _userRepository.DeleteAsync(userGuid);
-          
+            await _userRepository.DeleteAsync(userGuid);          
 
             return NoContent();
         }
-
         
     }
 }
